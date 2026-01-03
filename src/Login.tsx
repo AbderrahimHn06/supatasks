@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -14,36 +14,27 @@ export default function Login() {
     setLoading(true);
     setMessage(null);
     if (mode == "signup") {
-      setMessage("signed up");
-      const { error, data } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at");
-
-      setLoading(false);
-
-      if (error) setMessage("faliled");
-      else {
-        setMessage("success sign up");
-        navigate("/tasks");
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (signUpError) {
+        setLoading(false);
+        console.log(signUpError);
+        return;
       }
-
-      console.log(data);
     } else {
-      const { error, data } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at");
-
-      setLoading(false);
-
-      if (error) setMessage("faliled");
-      else {
-        setMessage("success log in");
-        navigate("/tasks");
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (signInError) {
+        setLoading(false);
+        console.log(signInError);
+        return;
       }
 
-      console.log(data);
+      navigate("/tasks");
     }
   };
 

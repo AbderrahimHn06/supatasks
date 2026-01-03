@@ -89,7 +89,9 @@ export default function Tasks() {
     setIsLoading(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) return;
     navigate("/");
   };
 

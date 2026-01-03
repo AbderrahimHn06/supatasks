@@ -33,7 +33,7 @@ export default function Login() {
         console.log(signInError);
         return;
       }
-
+      localStorage.setItem("email", email);
       navigate("/tasks");
     }
   };

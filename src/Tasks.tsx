@@ -15,6 +15,7 @@ type Task = {
 };
 
 export default function Tasks() {
+  const email = localStorage.getItem("email");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +24,10 @@ export default function Tasks() {
 
   const fetchTasks = async () => {
     setIsLoading(true);
-    const { data, error } = await supabase.from("tasks").select("*");
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .order("created_at");
 
     if (error) {
       setIsLoading(false);
@@ -45,8 +49,10 @@ export default function Tasks() {
     if (!newTask.trim()) return;
 
     setIsLoading(true);
-
-    const { error } = await supabase.from("tasks").insert({ title: newTask });
+    console.log(email);
+    const { error } = await supabase
+      .from("tasks")
+      .insert({ title: newTask, author_email: email });
 
     if (error) {
       setIsLoading(false);

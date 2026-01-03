@@ -9,6 +9,7 @@ import { type Session } from "@supabase/supabase-js";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function App() {
         console.error(error);
         return;
       }
+      localStorage.setItem("email", currentSession?.user.user_metadata.email);
       setSession(currentSession);
       if (session) {
         navigate("/tasks");
